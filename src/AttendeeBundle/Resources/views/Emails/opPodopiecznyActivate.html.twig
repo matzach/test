@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <p>Witaj,
+    piszemy do Ciebie ponieważ Użytkownik {{ user.name }} {{ user.surname }} wskazał
+    ciebie jako swojego podopiecznego na evencie {{ event.nazwa }}.</p>
+    
+    <p>Nie masz jeszcze konta. By potwierdzić jego wskazanie musisz założyć konto klikając
+    w poniższy mail (oraz zgłaszając uczestnictwo w {{ event.nazwa }}</p>
+    
+    <p><a href="{{ url('email_userOPActivate', {"email_att2user": att2User.email, "token": att2User.token} ) }}">Zalóż konto w systemie SNAIL</a>
+    <br><br>
+    <a href="{{ url('email_userOPDeActivate', {"email_att2user": att2User.email, "token": att2User.token} ) }}">Nie chcę teraz zakładać konta i uczestniczyć w tej imprezie.</a></p>
+</body>
+</html>

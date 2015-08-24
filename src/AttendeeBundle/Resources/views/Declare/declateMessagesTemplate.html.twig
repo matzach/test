@@ -1,0 +1,10 @@
+{% extends 'index.html.twig' %}
+
+{% block content %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url('UC_012_eventpanel') }}" class="button large success">SNAILBook</a>
+{% endblock %}

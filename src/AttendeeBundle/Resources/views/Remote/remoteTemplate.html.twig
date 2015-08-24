@@ -1,0 +1,39 @@
+{% extends 'iframe.html.twig' %}
+
+{% block form_errors -%}
+    {% if errors|length > 0 -%}
+        <div>
+            {%- for error in errors -%}
+                <div data-alert="" class="alert-box alert">
+                    {{ error.message }}
+                </div>
+            {%- endfor -%}
+        </div>
+    {%- endif %}
+{%- endblock form_errors %}
+
+{% form_theme form _self %}
+
+{% block content %}
+    <div class="row">
+        <div class="small-11 columns small-centered" style="margin-top: 40px;">
+            <img src="http://snailbook.eu/{{ event.imgFile }}" style="margin: 10px 0 20px 0;">
+            <p style="float: left; font-size: 2.5em; margin-right: 30px;">
+                <i class="fa fa-bullhorn"></i> 
+            </p>
+            <p style="font-size: 0.85em;">
+            Tutaj możesz zgłosić się na konwent <strong>{{event.nazwa}}</strong> podając swój email
+            lub login do SNAILBooka.<br> 
+            
+            <strong>Nie podawaj swojego hasła!</strong>
+            </p>
+            {{ form(form) }}
+            <div style="clear:both"></div>
+            <p style="font-size: 0.85em; margin-top: 20px;">
+                Jeżeli nie masz konta na SNAILBooku
+                to zostaniesz przekierowany do strony, gdzie będziesz mógł założyć konto
+                i następnie zgłosić swoje uczestnictwo.<br>
+            </p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'iframe.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="small-11 columns small-centered"  style="margin-top: 40px;">
+            <p class="panel">
+                Podany user nie istnieje. Prawdopodobnie wpisałeś błędny login lub email.
+            </p>
+            <a href="{{ url('DR_001_IFRAME', {'token': event.token}) }}" class="button success">
+                <i class="fa fa-bullhorn"></i> Spróbuj jeszcze raz
+            </a>
+            <p class="panel callout">
+                <strong>Zarejestruj się</strong><br>
+                Jeżeli nie jesteś zarejestrowany w systemie SNAILBook to prosimy
+                o <strong>dokonanie jednorazowej rejestracji i zgłoszenie się na
+                wybrany konwent.</strong>
+            </p>
+            <p>
+                Po założeniu konta będziesz mógł zawsze rejestrować się przez 
+                tę wtyczkę.
+            </p>
+            <a href="{{ url('register') }}" target="_blank" class="button">
+                <i class="fa fa-user-plus"></i> Zarejestruj się w SNAILBooku
+            </a>
+            
+        </div>
+    </div>
+{% endblock %}
+{# empty Twig template #}

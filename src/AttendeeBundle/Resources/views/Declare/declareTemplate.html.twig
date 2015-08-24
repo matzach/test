@@ -1,0 +1,145 @@
+{% extends 'index.html.twig' %}
+
+{% import 'AkredytacjaAttendeeBundle::Show/attendeeListMacro.html.twig' as attList %}
+
+{% form_theme form _self %}
+
+{% block checkbox_widget %}
+{% spaceless %}
+    <br>
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endspaceless %}
+{% endblock checkbox_widget %}
+
+{% block form_errors -%}
+    {% if errors|length > 0 -%}
+        <div>
+            {%- for error in errors -%}
+                <div data-alert="" class="alert-box alert">
+                    {{ error.message }}
+                </div>
+            {%- endfor -%}
+        </div>
+    {%- endif %}
+{%- endblock form_errors %}
+
+{% form_theme form _self %}
+
+{% block content %}
+    <div class="margin-top">
+        <div class="row">
+            <div class="small-10 small-offset-1 columns">
+                <div class="panel">
+                    <h2>{{ event.nazwa }}</h2>
+                    {% if attendee is defined %}
+                        <h3>{{ attendee.nazwijStatus }}</h3>
+                    {% endif %}
+                    <h3><i class="fa fa-bullhorn"></i> Zgłoszenie uczestnika {{ user.name }} {{ user.nickname | cite }} {{ user.surname }}</h3>
+                    <strong>Start:</strong> {{ event.startEventu | date( 'Y-m-d H:i' ) }} <br>
+                    <strong>Koniec:</strong> {{ event.koniecEventu | date( 'Y-m-d H:i' ) }} <br>
+                    <strong>Składka akredytacyjna:</strong> {{ event.skladka }} PLN <br>
+                    {% if event.jednaSkladka %}
+                        <strong>Dniówka:</strong> {{ event.skladkaDniowka }} PLN <br>
+                    {% endif %}
+                    {% if event.moznaZglaszacPP %}
+                        <strong>Zniżka dla twórców:</strong> {{ event.koniecEventu | date( 'Y-m-d H:i' ) }} <br>
+                    {% endif %}
+                </div>
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-6 small-offset-3 columns">
+                <div class="alert-box secondary">Pola oznaczone <span class="required"></span> są wymagane.</div>
+                {{ form_start(form) }}
+                
+                    {% if form_errors(form) != '' %}
+                    <div class="alert-box alert">
+                        {{ form_errors(form) }}
+                    </div>
+                    {% endif %}
+
+                    <fieldset>
+                        <legend>Przyjeżdzam na: <span class="required"></span></legend>
+
+                        <div class="small-3 columns">
+                            {{ form_label(form.czyCalosc) }}
+                            {{ form_errors(form.czyCalosc) }}
+                            {{ form_widget(form.czyCalosc) }}
+                        </div>
+
+                        <div class="small-9 columns">
+                            {{ form_label(form.noce) }}
+                            {{ form_errors(form.noce) }}
+                            {{ form_widget(form.noce) }}
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Tutaj możesz wskazać opiekuna lub podopiecznego <span class="required"></span></legend>
+                        <div class="small-3 columns">
+                            {{ form_label(form.zgloszePozniej) }}
+                            {{ form_errors(form.zgloszePozniej) }}
+                            {{ form_widget(form.zgloszePozniej) }}
+                        </div>
+
+                        <div class="small-9 columns">
+                            {{ form_label(form.emailAtt2User) }}
+                            {{ form_errors(form.emailAtt2User) }}
+                            {{ form_widget(form.emailAtt2User) }}
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Informacje dodatkowe</legend>
+                        <div class="small-12 columns">
+                            {{ form_label(form.skadWieszOEvencie) }}
+                            {{ form_errors(form.skadWieszOEvencie) }}
+                            {{ form_widget(form.skadWieszOEvencie) }}
+                        </div>
+                        
+                        <div class="small-12 columns">
+                            {{ form_label(form.uwagiDoOrgow) }}
+                            {{ form_errors(form.uwagiDoOrgow) }}
+                            {{ form_widget(form.uwagiDoOrgow) }}
+                        </div>
+                    </fieldset>    
+                        <fieldset>
+                            <legend>Dodatkowe zniżki, składki i gadżety </legend>
+                            {% if form.skladkiDodatkowe is defined %}
+                            <div class="small-6 columns">
+                                {{ form_label(form.skladkiDodatkowe) }}
+                                {{ form_errors(form.skladkiDodatkowe) }}
+                                {{ form_widget(form.skladkiDodatkowe) }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if form.att2gadzety is defined %}
+                            <div class="small-6 columns">
+                                {{ form_label(form.att2gadzety) }}
+                                {{ form_errors(form.att2gadzety) }}
+                                {{ form_widget(form.att2gadzety) }}
+                            </div>
+                            {% endif %}
+                        </fieldset>
+
+                    <div>
+                        {{ form_widget(form.submit) }}
+                        <a href="{{ url('UC_012_eventpanel_sort') }}" class="button tiny alert">Wróć do listy konwentów</a>
+                    </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts '@AkredytacjaAttendeeBundle/Resources/public/js/attendeeForm.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

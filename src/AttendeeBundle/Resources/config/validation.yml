@@ -1,0 +1,44 @@
+## =============================================================================
+
+Akredytacja\AttendeeBundle\Form\AttendeeForm:
+    getters:
+        checkEmail:
+            - 'True': { message: 'Podaj maila lub znaznacz odpowiedni checkbox' }
+        noceCalosc:
+            - 'True': { message: 'Musisz wybrać udział w całości konwentu lub w przynajmniej jedej nocy.' }
+    properties:
+        czyCalosc:
+            
+        noce:
+            
+        skadWieszOEvencie:
+            - Length:
+                max: 2000
+    
+        uwagiDoOrgow:
+            - Length:
+                max: 1000
+
+        zgloszePozniej: 
+
+        emailAtt2User:
+            - Email: ~
+
+## =============================================================================
+
+##Walidacja gadżetu
+
+Akredytacja\AttendeeBundle\Form\Att2GadzetType:
+    ilosc:
+        - GreaterThanOrEqual:
+            value: 0
+
+## =============================================================================
+
+##Walidacja remote declaration
+
+Akredytacja\AttendeeBundle\Form\AttendeeRemoteFormType:
+    loginEmail:
+        - Length:
+            max: 10
+        - NotBlank: ~

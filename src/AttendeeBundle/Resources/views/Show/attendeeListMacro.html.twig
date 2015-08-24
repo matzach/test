@@ -1,0 +1,97 @@
+{# Macra do obsługi listy uczestników #}
+
+{# Macro zaznaczające option w select dla wybranego statusu attendee w evencie #}
+{% macro ifSelected( attendee, actualOption ) %}
+    {% if attendee.status == actualOption %}
+        selected
+    {% endif %}
+{% endmacro %}
+
+{# Macro określa status Usera OP #}
+{% macro userOP( attendee ) %}
+    
+    {% set statusOP = attendee.statusUseraOP %}
+    {% if attendee.att2User.email is defined %}
+        {% set email = '<a href="mailto:'~ attendee.att2User.email ~'">'~ attendee.att2User.email ~'</a>' %}
+    {% endif %}
+    
+    {% if statusOP == 0 %}
+        <span class="warning">Wskazany podopieczny o mailu {{email |raw}} nie istnieje</span>
+    {% elseif statusOP == 1 %}
+        <span class="warning">Wskazany opiekun o mailu {{email | raw}} nie istnieje</span>
+    {% elseif statusOP == 2 %}
+        <span>Wybiorę podopiecznego później</span>
+    {% elseif statusOP == 3 %}
+        <span class="warning">Wybiorę opiekuna później</span>
+    {% elseif statusOP == 4 %}
+        <span>Podopieczny {{ email | raw }} nie potwierdził.</span>
+    {% elseif statusOP == 5 %}
+        <span class="warning">Opiekun {{ email | raw }} nie potwierdził.</span>
+    {% elseif statusOP == 10 %}
+        <span>Podopieczny: {{ email | raw }}</span>
+    {% elseif statusOP == 11 %}
+        <span class="warning">Opiekun: {{ email | raw }}</span>
+    {% elseif statusOP == 100 %}
+        {% set emailOP = '<a href="mailto:'~ attendee.getUserOPEmail ~'">'~ attendee.getUserOPEmail ~'</a>' %}
+        <span class="warning">Wybrany przez opiekuna (nie potwierdził): {{ emailOP | raw }}</span>
+        
+    {% elseif statusOP == 101 %}
+        {% set emailOP = '<a href="mailto:'~ attendee.getUserOPEmail ~'">'~ attendee.getUserOPEmail ~'</a>' %}
+        <span class="warning">Wybrany przez podopiecznego (nie potwierdził): {{ emailOP | raw }}</span>
+    {% elseif statusOP == 110 %}
+        {% set emailOP = '<a href="mailto:'~ attendee.getUserOPEmail ~'">'~ attendee.getUserOPEmail ~'</a>' %}
+        <span>Wybrany przez opiekuna (potwierdził): {{ emailOP | raw }}</span>
+    {% elseif statusOP == 111 %}
+        {% set emailOP = '<a href="mailto:'~ attendee.getUserOPEmail ~'">'~ attendee.getUserOPEmail ~'</a>' %}
+        <span>Wybrany przez podopiecznego (potwierdził): {{ emailOP | raw }}</span>
+    {% endif %}
+{% endmacro %}
+
+{# Sprawdza jaki w tej chwili jest tryb sortowania uczestników #}
+{% macro sortStatus( is_default, actual_col, actual_order, sorting_col, order ) %}
+    {% if is_default and sorting_col == 'surname' %}
+        
+    {% else %}
+        {% if sorting_col == actual_col and order == actual_order %}
+            selected
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
+{# Sprawdza czy att przyjechał na event #}
+{% macro checked( arrived ) %}
+    {% if arrived %}
+        checked
+    {% endif %}
+{% endmacro %}
+
+{#  #}
+{% macro statusIcon( attendee )  %}
+    {% set statusOP = attendee.statusUseraOP %}
+    {% if attendee.arrived %}
+        <i class="fa fa-bookmark success-color icons" title="Uczestniczył w konwencie"></i>
+    {% else %}
+        <i class="fa fa-bookmark error-color icons" title="Nie uczestniczył w konwencie"></i>
+    {% endif %}
+    {% if attendee.czyOplacilSkladke %}
+        <i class="fa fa-money success-color icons" title="Opłacił składkę"></i>
+    {% else %}
+        <i class="fa fa-money error-color icons" title="Nie opłacił składkę"></i>
+    {% endif %}
+    {% if attendee.getActualUser.czyPelnoletni %}
+        <i class="fa fa-birthday-cake success-color icons" title="Pełnoletni uczestnik"></i>
+    {% else %}
+        <i class="fa fa-birthday-cake warning-color icons" title="Niepełnoletni uczestnik"></i>
+    {% endif %}
+    {% if statusOP in [1,3,5,101] %}
+        <i class="fa fa-exclamation-triangle error-color icons" title="Uczestnik nie wybrał opiekuna"></i>
+    {% endif %}
+    {% if ppService.countUserPP(attendee.user, attendee.event, 'author') > 0 %}
+        <i class="fa fa-gamepad success-color icons" title="Uczestnik zgłosił {{ ppService.countUserPP(attendee.user, attendee.event, 'author') }} PP"></i>
+        {{ ppService.countUserPP(attendee.user, attendee.event, 'author') }}
+    {% endif %}
+    {% if ppService.countUserPP(attendee.user, attendee.event, 'creator') > 0 %}
+        <i class="fa fa-gamepad warning-color icons" title="Uczestnik jest współtwórcą {{ ppService.countUserPP(attendee.user, attendee.event, 'creator') }} PP"></i>
+        {{ ppService.countUserPP(attendee.user, attendee.event, 'creator') }}
+    {% endif %}
+{% endmacro %}

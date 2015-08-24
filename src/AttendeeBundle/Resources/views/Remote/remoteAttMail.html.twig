@@ -1,0 +1,117 @@
+{% extends 'emailTemplate.html.twig' %}
+
+{% block content %}
+    
+    <table class="row">
+        <tr>
+            <td class="wrapper last">
+                <table class="twelve columns">
+                    <tr>
+                        <td>
+                            <h2>Witaj {{ user.name }} {{ user.nickname | cite }} {{ user.surname }}</h2>
+                            <p class="lead">
+                                Zgłosiłeś się na konwent <strong>{{ event.nazwa }}</strong> bezpośrednio ze
+                                strony konwentu (za pomocą naszej wtyczki społecznościowej).
+                            </p>
+                            <p class="lead">
+                                Przy tego typu zgłoszeniach, SNAILBook zgłasza Ciebie na cały konwent i nie
+                                ustawia żadnych dodatkowych opcji. Jeżeli chcesz zmienić ilość nocy, zgłosić
+                                punkt programu lub dodać do zgłoszenia uwagi dla organizatgorów musisz 
+                                <a href="{{ url('login') }}">zalogować się do SNAILBooka</a>.
+                            </p>
+                        </td>
+                      <td class="expander"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+                            
+    <table class="row">
+        <tr>
+            <td class="wrapper last">
+                <table class="three columns">
+                    <tr>
+                        <td>
+                            <table class="button success">
+                                <tr>
+                                    <td>
+                                        <a href="{{ url('login') }}">Zaloguj się</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="expander"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+                                    
+    <table class="row">
+        <tr>
+            <td class="wrapper last">
+                <table class="twelve columns">
+                    <tr>
+                        <td class="panel">
+                            <p>
+                                Również możesz odwiedzić stronę konwentu {{ event.nazwa }} klikając w poniższy button
+                            </p>
+                            <table class="button secondary">
+                                <tr>
+                                    <td>
+                                        <a href="{{ event.url }}">Przejdź do strony {{ event.nazwa }}</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="expander"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+                                  
+    <table class="row callout">
+        <tr>
+            <td class="wrapper last">
+                <table class="twelve columns">
+                    <tr>
+                        <td class="panel">
+                            <p>
+                                Jeżeli nie zgłaszałeś się na ten konwent to skontaktuj się
+                                z administratorem systemu <a href="mailto:admin@snailbook.eu">admin@snailbook.eu</a>
+                                lub zignoruj tego emaila.
+                            </p>
+                            <p>
+                                Możesz również zrezygnować z tego konwentu edytując swoje zgłoszenie na stronie SNIALBooka.
+                            </p>
+                        </td>
+                        <td class="expander"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+                                    
+    <table class="row">
+        <tr>
+            <td class="wrapper last">
+                <table class="twelve columns">
+                    <tr>
+                        <td align="center">
+                            <center>
+                                <p style="text-align:center;">
+                                    <a href="{{ url('blog_about') }}">O SNAILBooki</a> | <a href="{{ url('blog_plugin') }}">O wtyczce</a> | <a href="mailto:admin@snailbook.eu">admin@snailbook.eu</a>
+                                </p>
+                            </center>
+                        </td>
+                        <td class="expander"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    
+{% endblock %}

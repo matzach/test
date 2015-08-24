@@ -1,0 +1,227 @@
+{% extends 'index.html.twig' %}
+
+{% import 'AkredytacjaAttendeeBundle::Show/attendeeListMacro.html.twig' as attList %}
+{% import 'AkredytacjaUsersBundle::Show/paginationMacro.html.twig' as pagination %}
+{% import 'AkredytacjaUsersBundle::Show/userGravatarMacro.html.twig' as gravatar %}
+
+{#{% block orgmenu %}
+    <li class="divider"></li>
+    <li><a href="{{ url('UC_088_attendee_list', {'id_eventu': event.id}) }}"><i class="fa fa-hand-o-left"></i> Wróć do eventu</a></li>
+{% endblock %}#}
+
+{% block searchBlock %}
+    <li class="divider"></li>
+    <li class="has-form">
+        <div class="row collapse">
+            <form method="GET" action="{{ path('UC_088_attendee_list', {'id_eventu': event.id, 'page':  actualPage}) }}" style="display:inline;">
+                <div class="small-9 columns">
+                    <input type="text" name="s" id="search" placeholder="Szukaj uczestnika">
+                </div>
+                <div class="small-3 columns">
+                    <button type="submit" class="secondary button expand"><i class="fa fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+      </li>
+{% endblock %}
+
+{% block secondMenu %}
+    {{ include('AkredytacjaEventBundle:Templates:orgMenu.html.twig') }}
+{% endblock %}                  
+
+{% block content %}
+    <div class="row">
+        <div class="small-12 columns">
+            <div class="panel">
+                <h1>{{ event.nazwa }} - lista uczestników</h1>
+            </div>
+       </div>
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+            {% for flashMessage in app.session.flashbag.get('attendee_exists') %}
+                <div class="flash-notice alert-box info">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="small-3 columns">
+            <a href="{{ url('TP_001_add', {'id_eventu': event.id, 'page': actualPage }) }}" class="btn button alert large"><i class="fa fa-user-plus"></i> Dodaj uczestnika</a>
+        </div>
+        <div class="small-3 columns">
+            <select onchange="location = this.options[this.selectedIndex].value;" >
+                <option value="{{ url('UC_088_attendee_list', {'id_eventu': event.id}) }}" {{ attList.sortStatus( is_default, 'name', 'ASC', sorting_col, order ) }} >Sortuj uczestników</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'name', 'order': 'ASC'}) }}" {{ attList.sortStatus( is_default, 'name', 'ASC', sorting_col, order ) }}>Imię malejąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'name', 'order': 'DESC'}) }}" {{ attList.sortStatus( is_default, 'name', 'DESC', sorting_col, order ) }}>Imię rosnąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'surname', 'order': 'ASC'}) }}" {{ attList.sortStatus( is_default, 'surname', 'ASC', sorting_col, order ) }}>Nazwisko malejąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'surname', 'order': 'DESC'}) }}" {{ attList.sortStatus( is_default, 'surname', 'DESC', sorting_col, order ) }}>Nazwisko rosnąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'rokurodzenia', 'order': 'ASC'}) }}" {{ attList.sortStatus( is_default, 'rokurodzenia', 'ASC', sorting_col, order ) }}>Rok urodzenia rosnąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'rokurodzenia', 'order': 'DESC'}) }}" {{ attList.sortStatus( is_default, 'rokurodzenia', 'DESC', sorting_col, order ) }}>Rok urodzenia malejąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'status', 'order': 'ASC'}) }}" {{ attList.sortStatus( is_default, 'status', 'ASC', sorting_col, order ) }}>Status rosnąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'status', 'order': 'DESC'}) }}" {{ attList.sortStatus( is_default, 'status', 'DESC', sorting_col, order ) }}>Status malejąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'skladka', 'order': 'ASC'}) }}" {{ attList.sortStatus( is_default, 'skladka', 'ASC', sorting_col, order ) }}>Składka rosnąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'skladka', 'order': 'DESC'}) }}" {{ attList.sortStatus( is_default, 'skladka', 'DESC', sorting_col, order ) }}>Składka malejąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'datazgloszenia', 'order': 'ASC'}) }}" {{ attList.sortStatus( is_default, 'datazgloszeniae', 'ASC', sorting_col, order ) }}>Data zgłoszenia rosnąco</option>
+                <option value="{{ url('UC_088A_attende_sort', {'id_eventu': event.id, 'sorting_col': 'datazgloszenia', 'order': 'DESC'}) }}" {{ attList.sortStatus( is_default, 'datazgloszenia', 'DESC', sorting_col, order ) }}>Data zgłoszenia malejąco</option>
+            </select>
+        </div>
+        <div class="small-3 columns">
+            <button class="large success ajax-stats" data-reveal-id="statsModal" data-event="{{ event.id }}" data-url="{{ url('AJAX_EVENT_STATS') }}"><i class="fa fa-tasks"></i> Statystyki</button>
+            <div id="statsModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+                <h2><i class="fa fa-tasks"></i> Statystyki konwentu</h2>
+                {{ include('AkredytacjaAttendeeBundle:Show:tableStats.html.twig') }}
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+            </div>
+        </div>
+        <div class="small-3 columns">
+        </div>
+    </div>
+    <div class="row-att">
+        <table style="margin: 0 auto; width: 100%;">
+            <thead>
+                <tr>
+                    <td>L.p.</td>
+                    <td><i class="fa fa-car"></i> Przyjechał</td>
+                    <td>Avatar</td>
+                    <td>Uczestnik</td>
+                    <td>Dniówki</td>
+                    <td>Status</td>
+                    <td>Oszacowana składka</td>
+                    <td>Wpłata</td>
+                    <td>Domki</td>
+                </tr>
+            </thead>
+            {% for attendee in attendees %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        <div class="switch">
+                            <input type="checkbox" class="att-arrived" id="att-arrived-{{ attendee.id }}" {{ attList.checked( attendee.arrived ) }}  data-attendee="{{ attendee.id }}" data-event="{{event.id}}">
+                            <label for="att-arrived-{{ attendee.id }}"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <div>{{ attList.statusIcon(attendee) }}</div>
+                        <div>{{ gravatar.show( attendee.getActualUser, 80 ) }}</div>
+                    </td>
+                    <td>
+                        <div>
+                            <h4>
+                                {% if attendee.getUser.id is defined %}
+                                    <i class="fa fa-user" title="Uczestnik zarejestrowany w SNAILbook"></i>
+                                {% else %}
+                                    <i class="fa fa-user-secret" title="Uczestnik tymczasowy - niezarejestrowany w SNAILbook"></i>
+                                {% endif %}
+                                <a href="{{ path('UC_099_show_attendee', {'id_attendee': attendee.id}) }}">
+                                {{ attendee.getActualUser.name }}
+                                {{ attendee.getActualUser.nickname | cite }}
+                                {{ attendee.getActualUser.surname }}
+                            </a></h4>
+                        </div>
+                        <div>
+                            <strong>E-mail:</strong> <a href="mailto:{{ attendee.getActualUser.email }}">{{ attendee.getActualUser.email }}</a>
+                        </div>
+                        {% if attendee.getUser.id is defined %}
+                            {% if is_granted("ROLE_ADMIN") %}
+                                <div>
+                                    <a href="{{ path('UC_020_show_user', {'id_usera': attendee.getActualUser.id}) }}" class="button alert tiny">Pokaż dane</a><br>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if attendee.noce[0] == 'all' %}
+                            Całość
+                        {% else %}
+                            {{ attendee.noce | length }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <select class="att-select" id="att-select-{{ attendee.id }}" data-event="{{event.id}}" data-attendee="{{attendee.id}}">
+                            <option value="1" {{ attList.ifSelected( attendee, 1 ) }}>Nowozgłoszony</option>
+                            <option value="3" {{ attList.ifSelected( attendee, 3 ) }}>Zgłoszony, nieopłacony</option>
+                            <option value="7" {{ attList.ifSelected( attendee, 7 ) }}>Zgłoszony, opłacony</option>
+                            <option value="6" {{ attList.ifSelected( attendee, 6 ) }}>Rezygnacja</option>
+                        </select>
+                    </td>
+                    <td>
+                        {% if attendee.czyOplacilSkladke  %}
+                            <span class="label success">Składka opłacona</span>
+                        {% else %}
+                            <span class="label alert">Składka nie opłacona</span>
+                        {% endif %}
+                        <h4>{{ skladka.obliczSkladke(attendee) }} PLN</h4>
+                    </td>
+                    <td>
+                        <div style="width:70%; float: left;">
+                            <input type="number" value="{{attendee.wysokoscOplaconejSkladki}}" class="att-skladka" id="att-skladka-{{ attendee.id }}">
+                        </div>
+                        <div  style="width:20%; float:right;">
+                            <button class="att-skladka-btn button tiny" id="att-skladka-btn-{{ attendee.id }}" data-attendee="{{ attendee.id }}" data-event="{{event.id}}">Zmień</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                        <div style="width:30%; float: left;">
+                            <strong>Uwagi do wpłaty</strong>
+                        </div>
+                        <div style="width:60%; float: left;">
+                            <input type="text" value="{{attendee.skladkaComment}}" class="att-skladka-uwaga" id="att-skladka-uwaga-{{ attendee.id }}" title="{{attendee.skladkaComment}}">
+                        </div>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td></td>
+                    <td> 
+                        {% if attendee.user | length > 0 %}
+                            {% if (ppService.countUserPP(attendee.getActualUser, attendee.event, 'author') > 0) or (ppService.countUserPP(attendee.getActualUser, attendee.event, 'creator') > 0 )%}
+                                {% if (ppService.countUserPP(attendee.getActualUser, attendee.event, 'author') > 0) %}
+                                <a href="{{ path('PP_005_list_copy_event_user', {'id_eventu': attendee.event.id, 'id_usera': attendee.getActualUser.id, 'route': 'attlist'}) }}">
+                                    <i class="fa fa-gamepad"></i> Program uczestnika {{attendee.getActualUser.name}}
+                                </a><br>
+                                {% endif %}
+                                {% if (ppService.countUserPP(attendee.getActualUser, attendee.event, 'creator') > 0 ) %}
+                                    <a href="{{ path('PP_005_list_copy_event_creators', {'id_eventu': attendee.event.id, 'id_usera': attendee.getActualUser.id, 'route': 'attlist'}) }}">
+                                        <i class="fa fa-gamepad"></i> Program współtworzony
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td colspan="2">
+                        <strong>Opiekun/podopieczny:</strong><br>
+                        {{ attList.userOP(attendee) }}
+                    </td>
+                    <td colspan="3">
+                        <strong>Uwagi odnośnie uczestnika:</strong><br>
+                        <textarea id="org-comment-{{ attendee.id }}" style="width: 100%; height:50px">{{ attendee.orgComment }}</textarea>
+                    </td>
+                    <td><button class="org-comment-button button info tiny" data-attendee="{{ attendee.id }}" data-event="{{event.id}}">Zapisz uwagę</button></td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% set route = 'UC_088_attendee_list' %}
+        {% set mainRouteParams = { 'id_eventu': event.id } %}
+        {{ pagination.nav( 'pagination', route, mainRouteParams, actualPage, pageCount ) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts '@AkredytacjaAttendeeBundle/Resources/public/js/attendeeList.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% javascripts '@AkredytacjaAttendeeBundle/Resources/public/js/table-highlight.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% javascripts '@AkredytacjaAttendeeBundle/Resources/public/js/statsAjax.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
+

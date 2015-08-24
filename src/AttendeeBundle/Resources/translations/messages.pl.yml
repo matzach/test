@@ -1,0 +1,8 @@
+error:
+    UC_104_access_denied: Brak dostępu
+    UC_104_empty_att: Nie ma takiego uczestnika
+    UC_105_access_denied: Brak dostępu
+    UC_105_empty_att: Nie ma takiego uczestnika
+success:
+    UC_104: Rezygnacja przyjęta
+    UC_105: Zgłoszenie przyjęte

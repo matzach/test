@@ -1,0 +1,130 @@
+{% extends 'index.html.twig' %}
+
+{% import 'AkredytacjaAttendeeBundle::Show/attendeeListMacro.html.twig' as attList %}
+{% import 'AkredytacjaUsersBundle::Show/userGravatarMacro.html.twig' as gravatar %}
+
+{% block content %}
+    <div class="row">
+        <div class="small-12 columns margin-top">
+            <div class="panel">
+                <div class="row">
+                    <div class="small-12 columns">
+                        <h3><i class="fa fa-bullhorn"></i> Zgłoszenie na {{ event.nazwa |default('') }}</h3>
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                {% set user = attendee.getActualUser %}
+                    <div class="small-1 columns">
+                        {{ gravatar.show( user, 100 ) }}
+                    </div>
+                    <div class="small-11">
+                        <h4>Uczestnik: {{ user.name }} {{ user.nickname | cite }} {{ user.surname }}</h4>
+                        <div>{{ attList.statusIcon(attendee) }}<strong>Twój status:</strong> {{ attendee.nazwijStatus }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="row">
+        <div class="small-6 columns">
+            <div class="panel">
+                <h4>Dane zgłoszenia</h4>
+                <div>
+                    <strong>Akredytacja: </strong> 
+                    {% if attendee.noce[0] == 'all' %}
+                        całość.
+                    {% else %}
+                        {{ attendee.noce | length }} nocy.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="small-6 columns">        
+            <div class="panel">
+                <h4>Opiekun/podopieczny</h4>
+                {{ attList.userOP(attendee) }}
+            </div>
+        </div>
+    </div>
+            
+    <div class="row">
+        <div class="small-12 columns">
+            <div class="panel white-panel">
+                <div>
+                    <h5>Skąd dowiedziałeś się o evencie:</h5>
+                    <p>{{ attendee.skadWieszOEvencie | default('Szkoda, że nic nie wpisałeś :(')}}</p>
+                </div>
+                
+                <div>
+                    <h5>Twoje uwagi do organizatorów:</h5>
+                    <p>{{ attendee.uwagiDoOrgow | default('Szkoda, że nic nie wpisałeś :(') }}</p>
+                </div>
+            </div>
+            <div class="panel">
+                <h4>Dodatkowe składki i zniżki</h4>
+                <ul>
+                    {% for wybranaSkladkaDodatkowa in attendee.wybraneSkladkiDodatkowe %}
+
+                        {% for skladkaDodatkowa in event.skladkiDodatkowe %}
+                            {% if wybranaSkladkaDodatkowa == skladkaDodatkowa.id %}
+                                <li><strong>{{ skladkaDodatkowa.nazwa }}</strong>
+                                {{ skladkaDodatkowa.typ | typSkladki }}
+                                {{ skladkaDodatkowa.wartosc }} PLN</li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+                
+                <h4>Wybrane gadżety</h4>
+                <ul class="small-block-grid-2 medium-block-grid-4">
+                    {% for att2Gadzet in att2Gadzets %}
+                        <li>
+                            <strong>{{ att2Gadzet.gadzet.nazwa }}</strong><br>
+                            <strong>Ilość:</strong> {{ att2Gadzet.ilosc }}, <strong>cena:</strong> {{ att2Gadzet.gadzet.cena }}<br>
+                            <strong>Twoje uwagi:</strong> {{ att2Gadzet.uwagi }}<br>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="panel callout">
+                <h3>Oszacowana składka akredytacyjna: {{ oszacowanaSkladka }} PLN</h3>
+            </div>
+            
+        </div>
+    </div>
+            
+            
+    <div class="row">
+        <div class="small-12 columns">
+            <ul class="button-group">
+                <li>
+                    {% if tempDeclare %}
+                        <a href="{{ path('UC_088_attendee_list', {'id_eventu': event.id}) }}" class="button">Powrót do listy uczestników</a>
+                    {% else %}
+                        <a href="{{ path('UC_012_eventpanel') }}" class="button">OK</a>
+                    {% endif %}
+                </li>
+                <li><a href="{{ path('UC_060_application_edit', {'id_attendee': attendee.id, 'tempDeclare': tempDeclare, 'id_eventu': event.id}) }}" class="button">Edytuj</a></li>
+                {% if attendee.status == 6 %}
+                    <li><a href="{{ url('email_applicationDeclareActivate', {"id_usera": user.id, "id_eventu": event.id, "token": attendee.token} ) }}" class="att-redeclare-btn button" data-attendee="{{ attendee.id }}">Zgłoś się ponownie</a></li>
+                {% else %}
+                    <li><a href="{{ url('email_applicationDeclareDeActivate', {"id_usera": user.id, "id_eventu": event.id, "token": attendee.token} ) }}" class="att-resignation-btn button" data-attendee="{{ attendee.id }}">Rezygnuję</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts '@AkredytacjaAttendeeBundle/Resources/public/js/attendeeList.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

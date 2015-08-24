@@ -1,0 +1,27 @@
+{% extends 'index.html.twig' %}
+
+{% block secondMenu %}
+    {{ include('AkredytacjaEventBundle:Templates:orgMenu.html.twig') }}
+{% endblock %}    
+
+{% block content %}
+    <div class="row">
+        <div class="small-12 columns">
+            <h2><i class="fa fa-tasks"></i> Statystyki konwentu {{ event.nazwa }}</h2>
+            {{ include('AkredytacjaAttendeeBundle:Show:tableStats.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts '@AkredytacjaAttendeeBundle/Resources/public/js/attendeeList.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% javascripts '@AkredytacjaAttendeeBundle/Resources/public/js/table-highlight.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% javascripts '@AkredytacjaAttendeeBundle/Resources/public/js/statsEventAjax.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

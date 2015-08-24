@@ -1,0 +1,75 @@
+{# empty Twig template #}
+<table id="stats-table" data-event="{{ event.id }}" data-url="{{ url('AJAX_EVENT_STATS') }}">
+<thead>
+    <tr>
+        <th width="200">Dana</th>
+        <th>Wartość</th>
+        <th style="width: 70%;">Procenty</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td><strong>Wszyscy zgłoszeni</strong></td>
+        <td><span id="attsNo"></span></td>
+        <td>
+            <div class="progress">
+                <span id="attsNoP" class="meter" style="color: #fff;"></span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Zgłoszeni w ciągu 7 dni</strong></td>
+        <td><span id="newAttsNo"></span></td>
+        <td>
+            <div class="progress">
+                <span id="newAttsNoP" class="meter" style="color: #fff;"></span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Zgłoszeni przez system</strong></td>
+        <td><span id="declaredUsers"></span></td>
+        <td>
+            <div class="progress">
+                <span id="declaredUsersP" class="meter" style="color: #fff;"></span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Zgłoszeni na miejscu</strong></td>
+        <td><span id="declaredTempUsers"></td>
+        <td>
+            <div class="progress">
+                <span id="declaredTempUsersP" class="meter" style="color: #fff;"></span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Przyjechało</strong></td>
+        <td><span id="arrivedAtts"></span></td>
+        <td>
+            <div class="progress success">
+                <span id="arrivedAttsP" class="meter" style="color: #fff;"></span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Przyjechało spośród zgłoszonych</strong></td>
+        <td><span id="arrivedUserAtts"></span></td>
+        <td>
+            <div class="progress success">
+                <span id="arrivedUserAttsP" class="meter" style="color: #fff;"></span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Przyjechało tymczasowych</strong></td>
+        <td><span id="arrivedTempUserAtts"></span></td>
+        <td>
+            <div class="progress success">
+                <span id="arrivedTempUserAttsP" class="meter" style="color: #fff;"></span>
+            </div>
+        </td>
+    </tr>
+</tbody>
+</table>

@@ -1,0 +1,110 @@
+{% extends "index.html.twig" %}
+{% block pageName %}
+    <h1>My contact book</h1>
+{% endblock %}
+
+{% block deleteAll %}<li><a id="deleteAll" href="">Delete all contacts</a></li>{% endblock %}
+
+{% block pageContent %}
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Phone number</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Zip</th>
+                <th>Friend?</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+                <tr>
+                    <td class="contact_id">{{ contact.id }}</td>
+                    <td>{{ contact.firstName }}</td>
+                    <td>{{ contact.lastName }}</td>
+                    <td>{{ contact.phoneNumber }}</td>
+                    <td>{{ contact.email }}</td>
+                    <td>{{ contact.address }}</td>
+                    <td>{{ contact.city }}</td>
+                    <td>{{ contact.zip }}</td>
+                    <td>
+                        {% if contact.isFriend == true %}
+                            is friend
+                        {% endif %}
+                    </td>
+                    <td><a href="{{ url('edit_contact', {'id': contact.id}) }}">Edit</a></td>
+                    <td><a href="{{ url('delete_contact', {'id': contact.id}) }}">Delete</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+            
+    <script>
+        $(document).ready(function () {
+            $('table').DataTable({
+                "aaSorting": [[2,'asc']],
+                "processing": true,
+                "serverSide": false,
+                "columns": [
+                    {"orderable": false, "searchable": false},
+                    {"orderable": false, "searchable": true},
+                    {"orderable": true, "searchable": true},                    
+                    {"orderable": false, "searchable": false},
+                    {"orderable": false, "searchable": false},
+                    {"orderable": false, "searchable": false},
+                    {"orderable": false, "searchable": false},
+                    {"orderable": false, "searchable": false},
+                    {"orderable": false, "searchable": false},
+                    {"orderable": false, "searchable": false},
+                    {"orderable": false, "searchable": false}
+                ],
+                "columnDefs": [
+                    {"name": "index", "targets": 0},
+                    {"name": "firstName", "targets": 1},
+                    {"name": "lastName", "targets": 2},
+                    {"name": "phoneNumber", "targets": 3},
+                    {"name": "email", "targets": 4},
+                    {"name": "address", "targets": 5},
+                    {"name": "city", "targets": 6},
+                    {"name": "zip", "targets": 7},
+                    {"name": "isFriend", "targets": 8},
+                    {"name": "edit", "targets": 9},
+                    {"name": "delete", "targets": 10},
+                ]
+
+            });
+        });
+    </script>
+    
+    <script>
+            $(document).ready(function(){
+                $('#deleteAll').click(function(e){
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to delete all your contacts visible on this site?')) {
+                        
+                        var params;
+                        $( ".contact_id" ).each(function( index ) {
+                            if (index == '0') {
+                                params = '?id=';
+                            } else {
+                                params = params+'_';
+                            }
+                            params = params + $(this).text();
+                        });
+                        params = '{{ path('delete_all_contacts') }}' + params;
+                        
+                        window.location.replace(params);
+                    } else {
+                        console.log('no');
+                    }
+                }); 
+            });
+        </script>
+    </body>
+{% endblock %}

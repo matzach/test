@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <p>Witaj {{ user.name }} {{ user.nickname | cite }} {{ user.surname }}.
+    Zgłosiłeś się na event {{ event.nazwa }}.</p>
+    
+    <p>By zakończyć proces akredytacji potwierdź swoje uczetsnictwo klikając w poniższy link</p>
+    
+    <p><a href="{{ url('email_applicationDeclareActivate', {'id_usera': user.id, 'id_eventu': event.id, 'token': attendee.token} ) }}">Potwierdzam moje uczestnictwo w {{ event.nazwa }}.</a>
+    <br><br>
+    <a href="{{ url('email_applicationDeclareDeActivate', {'id_usera': user.id, 'id_eventu': event.id, 'token': attendee.token} ) }}">Rezygnuję z uczestnictwa w {{ event.nazwa }}.</a></p>
+</body>
+</html>

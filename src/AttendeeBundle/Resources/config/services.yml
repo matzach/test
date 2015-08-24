@@ -1,0 +1,11 @@
+parameters:
+#    akredytacja_attendee.example.class: Akredytacja\AttendeeBundle\Example
+
+services:
+#    akredytacja_attendee.example:
+#        class: %akredytacja_attendee.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    attendee.user_op:
+        class: Akredytacja\AttendeeBundle\Service\UserOPService
+        arguments: ["@mailer", "@doctrine.orm.entity_manager", "@service_container"]
